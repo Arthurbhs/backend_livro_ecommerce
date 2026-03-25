@@ -1,0 +1,22 @@
+{
+  "reference_id": "teste_pix_123",
+  "customer": {
+    "name": "Arthur Barbosa",
+    "email": "arthur.shekinarfoxy@gmail.com",
+    "tax_id": "52517479852"
+  },
+  "items": [
+    {
+      "name": "Produto Teste",
+      "quantity": 1,
+      "unit_amount": 1000
+    }
+  ],
+  "qr_codes": [
+    {
+      "amount": {
+        "value": 1000
+      }
+    }
+  ]
+}

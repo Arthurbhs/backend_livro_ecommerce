@@ -1,0 +1,258 @@
+{
+  "type": "REQUEST",
+  "timestamp": "2026-03-23T01:10:55.723Z",
+  "requestId": "c10c19b1-510e-41be-811f-9fef5ad1ee1a",
+  "url": "https://api.pagseguro.com/orders",
+  "headers": {
+    "Authorization": "Bearer cf597bb4-b35e-4c05-86fd-98971f515d906571977e434fa5a57b3015b05eff0e86a8b0-04d3-439c-a99e-1201482b0c43",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "User-Agent": "PagBank-Node-Client"
+  },
+  "payload": {
+    "reference_id": "pedido_pix_1774228255723",
+    "notification_urls": [
+      "https://rookier-madeline-obstructingly.ngrok-free.dev/api/webhook/pagbank"
+    ],
+    "customer": {
+      "name": "Arthur_Barbosa",
+      "email": "arthur.shekinarfoxy@gmail.com",
+      "tax_id": "52517479852"
+    },
+    "items": [
+      {
+        "name": "Produto Teste",
+        "quantity": 1,
+        "unit_amount": 1000
+      }
+    ],
+    "qr_codes": [
+      {
+        "amount": {
+          "value": 1000
+        }
+      }
+    ]
+  }
+}
+
+{
+  "type": "RESPONSE",
+  "timestamp": "2026-03-23T01:10:56.326Z",
+  "requestId": "c10c19b1-510e-41be-811f-9fef5ad1ee1a",
+  "status": 201,
+  "data": {
+    "id": "ORDE_99C090A9-CF8E-4EF0-B739-8CB4154B90EB",
+    "reference_id": "pedido_pix_1774228255723",
+    "created_at": "2026-03-22T22:10:55.920-03:00",
+    "customer": {
+      "name": "Arthur_Barbosa",
+      "email": "arthur.shekinarfoxy@gmail.com",
+      "tax_id": "52517479852"
+    },
+    "items": [
+      {
+        "name": "Produto Teste",
+        "quantity": 1,
+        "unit_amount": 1000
+      }
+    ],
+    "qr_codes": [
+      {
+        "id": "QRCO_A44394F9-032F-4619-BF65-265569675802",
+        "expiration_date": "2026-03-23T23:59:59.000-03:00",
+        "amount": {
+          "value": 1000
+        },
+        "text": "00020101021226830014br.gov.bcb.pix2561api.pagseguro.com/pix/v2/A44394F9-032F-4619-BF65-26556967580227600016BR.COM.PAGSEGURO0136A44394F9-032F-4619-BF65-265569675802520454995303986540510.005802BR5922ELTON ALEXANDRE PEREIR6012Praia Grande62070503***6304D97C",
+        "arrangements": [
+          "PIX"
+        ],
+        "links": [
+          {
+            "rel": "QRCODE.PNG",
+            "href": "https://api.pagseguro.com/qrcode/QRCO_A44394F9-032F-4619-BF65-265569675802/png",
+            "media": "image/png",
+            "type": "GET"
+          },
+          {
+            "rel": "QRCODE.BASE64",
+            "href": "https://api.pagseguro.com/qrcode/QRCO_A44394F9-032F-4619-BF65-265569675802/base64",
+            "media": "text/plain",
+            "type": "GET"
+          }
+        ]
+      }
+    ],
+    "notification_urls": [
+      "https://rookier-madeline-obstructingly.ngrok-free.dev/api/webhook/pagbank"
+    ],
+    "links": [
+      {
+        "rel": "SELF",
+        "href": "https://api.pagseguro.com/orders/ORDE_99C090A9-CF8E-4EF0-B739-8CB4154B90EB",
+        "media": "application/json",
+        "type": "GET"
+      },
+      {
+        "rel": "PAY",
+        "href": "https://api.pagseguro.com/orders/ORDE_99C090A9-CF8E-4EF0-B739-8CB4154B90EB/pay",
+        "media": "application/json",
+        "type": "POST"
+      }
+    ]
+  }
+}
+
+{
+  "type": "REQUEST",
+  "timestamp": "2026-03-23T03:08:43.583Z",
+  "endpoint": "/orders",
+  "payload": {
+    "reference_id": "order_1774235323583",
+    "customer": {
+      "name": "Arthur_Barbosa",
+      "email": "arthur.shekinarfoxy@gmail.com",
+      "tax_id": "52517479852"
+    },
+    "items": [
+      {
+        "name": "Produto Teste",
+        "quantity": 1,
+        "unit_amount": 1000
+      }
+    ],
+    "charges": [
+      {
+        "reference_id": "charge_1774235323583",
+        "description": "Pagamento com cartão",
+        "amount": {
+          "value": 1000,
+          "currency": "BRL"
+        },
+        "payment_method": {
+          "type": "CREDIT_CARD",
+          "installments": 1,
+          "capture": true,
+          "soft_descriptor": "MINHALOJA",
+          "card": {
+            "encrypted": "Bq3DGWzm8rKS6X5EVtBiNIGEn0l9mEn151Vj39LnL+oYympJ8SusTNTy0pK6VydgfPqvlo2pTV+0jP7g5Baasea6i503MnhFrG/bgKkFTLJYgN3xrYhObNUOjEZ2dZkykdof9KGndBr1DGa1WOQ1IJZplHS0tJQsUh7HR9QvMnG9wW2lTtWsl7UD5LjELPwiNYL8ueylfqGDKiGdsn3sl1G0R3q5cTG4v2X+RgJk6wUY/eJ824PdjK0fphs+DgTnV/OqpKA7ykqRithX9zNYTCL7wGrwPQzoo83P1GFZV2ioK4MXj/2vpRqO1nVzjwZjtdZL/7b7HxXe+3/Nonh+7w==",
+            "holder": {
+              "name": "Arthur_Barbosa"
+            },
+            "billing_address": {
+              "street": "Rua Teste",
+              "number": "123",
+              "locality": "Centro",
+              "city": "São Paulo",
+              "region_code": "SP",
+              "country": "BRA",
+              "postal_code": "01001000"
+            }
+          }
+        }
+      }
+    ],
+    "notification_urls": [
+      "https://rookier-madeline-obstructingly.ngrok-free.dev/api/webhook/pagbank"
+    ]
+  }
+}
+
+{
+  "type": "RESPONSE",
+  "timestamp": "2026-03-23T03:08:44.415Z",
+  "endpoint": "/orders",
+  "response": {
+    "id": "ORDE_26EA9925-0775-4277-AA31-D9AA4F3D02D9",
+    "reference_id": "order_1774235323583",
+    "created_at": "2026-03-23T00:08:43.746-03:00",
+    "customer": {
+      "name": "Arthur_Barbosa",
+      "email": "arthur.shekinarfoxy@gmail.com",
+      "tax_id": "52517479852"
+    },
+    "items": [
+      {
+        "name": "Produto Teste",
+        "quantity": 1,
+        "unit_amount": 1000
+      }
+    ],
+    "charges": [
+      {
+        "id": "CHAR_6B71232D-68FA-48D7-BC39-710E499F8540",
+        "reference_id": "charge_1774235323583",
+        "status": "DECLINED",
+        "created_at": "2026-03-23T00:08:43.930-03:00",
+        "description": "Pagamento com cartão",
+        "amount": {
+          "value": 1000,
+          "currency": "BRL",
+          "summary": {
+            "total": 1000,
+            "paid": 0,
+            "refunded": 0
+          }
+        },
+        "payment_response": {
+          "code": "10000",
+          "message": "NAO AUTORIZADO PELO PAGSEGURO"
+        },
+        "payment_method": {
+          "type": "CREDIT_CARD",
+          "installments": 1,
+          "capture": true,
+          "card": {
+            "brand": "visa",
+            "first_digits": "411111",
+            "last_digits": "1111",
+            "exp_month": "12",
+            "exp_year": "2030",
+            "holder": {
+              "name": "Arthur Barbosa"
+            },
+            "issuer": {},
+            "country": "BRA"
+          },
+          "soft_descriptor": "MINHALOJA"
+        },
+        "metadata": {
+          "ps_order_id": "ORDE_26EA9925-0775-4277-AA31-D9AA4F3D02D9"
+        },
+        "links": [
+          {
+            "rel": "SELF",
+            "href": "https://api.pagseguro.com/charges/CHAR_6B71232D-68FA-48D7-BC39-710E499F8540",
+            "media": "application/json",
+            "type": "GET"
+          },
+          {
+            "rel": "CHARGE.CANCEL",
+            "href": "https://api.pagseguro.com/charges/CHAR_6B71232D-68FA-48D7-BC39-710E499F8540/cancel",
+            "media": "application/json",
+            "type": "POST"
+          }
+        ]
+      }
+    ],
+    "notification_urls": [
+      "https://rookier-madeline-obstructingly.ngrok-free.dev/api/webhook/pagbank"
+    ],
+    "links": [
+      {
+        "rel": "SELF",
+        "href": "https://api.pagseguro.com/orders/ORDE_26EA9925-0775-4277-AA31-D9AA4F3D02D9",
+        "media": "application/json",
+        "type": "GET"
+      },
+      {
+        "rel": "PAY",
+        "href": "https://api.pagseguro.com/orders/ORDE_26EA9925-0775-4277-AA31-D9AA4F3D02D9/pay",
+        "media": "application/json",
+        "type": "POST"
+      }
+    ]
+  }
+}
+
