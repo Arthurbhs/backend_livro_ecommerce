@@ -77,7 +77,7 @@ router.post("/calcular-frete", async (req, res) => {
     }
 
     // 📍 CEP de origem (seu estoque)
-    const cepOrigem = "17000000"; // Bauru/SP (ajuste se quiser)
+    const cepOrigem = "11706220"; // Bauru/SP (ajuste se quiser)
 
     const cepDestinoNum = Number(cepLimpo);
     const cepOrigemNum = Number(cepOrigem);
