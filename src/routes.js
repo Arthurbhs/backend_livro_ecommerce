@@ -27,6 +27,10 @@ router.post("/pix/create", async (req, res) => {
   }
 });
 
+router.get("/ping", (req, res) => {
+  res.json({ ok: true });
+});
+
 router.post("/credit-card/create", async (req, res) => {
   try {
     const { encryptedCard } = req.body;
