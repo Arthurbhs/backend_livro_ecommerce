@@ -61,8 +61,7 @@ router.post("/webhook/pagbank", (req, res) => {
   res.status(200).json({ received: true });
 });
 
-
-router.post("api/calcular-frete", async (req, res) => {
+router.post("/calcular-frete", async (req, res) => {
   try {
     const { cep } = req.body;
 
@@ -72,7 +71,6 @@ router.post("api/calcular-frete", async (req, res) => {
 
     const cepLimpo = cep.replace(/\D/g, "");
 
-    // mock por enquanto
     const valorFrete = 15;
 
     res.json({ valor: valorFrete, cep: cepLimpo });
@@ -81,8 +79,6 @@ router.post("api/calcular-frete", async (req, res) => {
     res.status(500).json({ error: "Erro ao calcular frete" });
   }
 });
-
-
 
 
 
