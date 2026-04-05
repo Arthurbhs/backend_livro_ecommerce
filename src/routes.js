@@ -61,6 +61,7 @@ router.post("/webhook/pagbank", (req, res) => {
   res.status(200).json({ received: true });
 });
 
+
 router.post("/calcular-frete", async (req, res) => {
   try {
     const { cep } = req.body;
@@ -71,11 +72,40 @@ router.post("/calcular-frete", async (req, res) => {
 
     const cepLimpo = cep.replace(/\D/g, "");
 
-    const valorFrete = 15;
+    if (cepLimpo.length !== 8) {
+      return res.status(400).json({ error: "CEP inválido" });
+    }
 
-    res.json({ valor: valorFrete, cep: cepLimpo });
+    // 📍 CEP de origem (seu estoque)
+    const cepOrigem = "17000000"; // Bauru/SP (ajuste se quiser)
+
+    const cepDestinoNum = Number(cepLimpo);
+    const cepOrigemNum = Number(cepOrigem);
+
+    // 🧠 "distância simulada"
+    const distancia = Math.abs(cepDestinoNum - cepOrigemNum);
+
+    // 📦 regras de frete
+    const base = 10; // valor mínimo
+    const fatorDistancia = 0.000002; // ajusta sensibilidade
+
+    let valorFrete = base + distancia * fatorDistancia;
+
+    // 💰 limites (evita valores absurdos)
+    if (valorFrete < 10) valorFrete = 10;
+    if (valorFrete > 80) valorFrete = 80;
+
+    // arredonda
+    valorFrete = Number(valorFrete.toFixed(2));
+
+    res.json({
+      valor: valorFrete,
+      cep: cepLimpo,
+      distancia_simulada: distancia
+    });
 
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Erro ao calcular frete" });
   }
 });
