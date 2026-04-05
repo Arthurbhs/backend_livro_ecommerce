@@ -27,8 +27,15 @@ router.post("/pix/create", async (req, res) => {
   }
 });
 
-router.get("/ping", (req, res) => {
-  res.json({ ok: true });
+router.get("/debug-rotas", (req, res) => {
+  res.json({
+    rotas: [
+      "POST /pix/create",
+      "POST /credit-card/create",
+      "POST /webhook/pagbank",
+      "POST /calcular-frete"
+    ]
+  });
 });
 
 router.post("/credit-card/create", async (req, res) => {
