@@ -4,9 +4,25 @@ import { auditPagBankRequest, auditPagBankResponse } from "./pagbankLogger.js";
 import { auditPagBankError } from "./pagbankLogger.js";
 
 dotenv.config();
-export async function createOrderWithCreditCard({ encryptedCard }) {
+export async function createOrderWithCreditCard({
+  encryptedCard,
+  cart,
+  frete = 0,
+  cep = "01001000"
+}) {
+
+  cep = cep.replace(/\D/g, "");
+
+  const totalProdutos = cart.reduce(
+    (acc, item) => acc + item.preco * item.quantidade,
+    0
+  );
+
+  const total = totalProdutos + frete;
+
   const payload = {
-    reference_id: "order_" + Date.now(),
+    reference_id: "pedido_cartao_" + Date.now(),
+    notification_urls: [process.env.PAGBANK_WEBHOOK_URL],
 
     customer: {
       name: "Arthur_Barbosa",
@@ -14,13 +30,26 @@ export async function createOrderWithCreditCard({ encryptedCard }) {
       tax_id: "52517479852"
     },
 
-    items: [
-      {
-        name: "Produto Teste",
-        quantity: 1,
-        unit_amount: 1000
+    shipping: {
+      amount: {
+        value: Math.round(frete * 100)
+      },
+      address: {
+        street: "Rua Exemplo",
+        number: "123",
+        locality: "Centro",
+        city: "São Paulo",
+        region_code: "SP",
+        country: "BRA",
+        postal_code: cep
       }
-    ],
+    },
+
+    items: cart.map(item => ({
+      name: item.titulo,
+      quantity: item.quantidade,
+      unit_amount: Math.round(item.preco * 100)
+    })),
 
     charges: [
       {
@@ -28,7 +57,7 @@ export async function createOrderWithCreditCard({ encryptedCard }) {
         description: "Pagamento com cartão",
 
         amount: {
-          value: 1000,
+          value: Math.round(total * 100),
           currency: "BRL"
         },
 
@@ -45,53 +74,20 @@ export async function createOrderWithCreditCard({ encryptedCard }) {
             },
 
             billing_address: {
-              street: "Rua Teste",
+              street: "Rua Exemplo",
               number: "123",
               locality: "Centro",
               city: "São Paulo",
               region_code: "SP",
               country: "BRA",
-              postal_code: "01001000"
+              postal_code: cep
             }
           }
         }
       }
-    ],
-
-    notification_urls: [process.env.PAGBANK_WEBHOOK_URL]
+    ]
   };
 
-  try {
-    auditPagBankRequest({
-      endpoint: "/orders",
-      payload
-    });
-
-    const response = await axios.post(
-      "https://api.pagseguro.com/orders",
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.PAGBANK_TOKEN}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
-
-    auditPagBankResponse({
-      endpoint: "/orders",
-      response: response.data
-    });
-
-    return response.data;
-
-  } catch (error) {
-    auditPagBankError({
-      endpoint: "/orders",
-      error: error.response?.data || error.message
-    });
-
-    throw error;
-  }
+  return await enviarPedidoPagBank(payload);
 }
 

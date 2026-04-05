@@ -1,75 +1,13 @@
-import dotenv from "dotenv";
-dotenv.config();
-import { createOrderWithCreditCard } from "./pagbankChargeService.js";
-import axios from "axios";
-import crypto from "crypto";
-import {
-  auditPagBankRequest,
-  auditPagBankResponse,
-  auditPagBankError
-} from "./pagbankLogger.js";
+export async function criarPedidoPix(cart, frete = 0, cep = "01001000") {
 
-const PAGBANK_TOKEN = process.env.PAGBANK_TOKEN?.trim();
+  cep = cep.replace(/\D/g, "");
 
-if (!PAGBANK_TOKEN) {
-  throw new Error("PAGBANK_TOKEN não definido");
-}
-
-const PAGBANK_API = "https://api.pagseguro.com";
-/**
- * Envia pedido para o PagBank (Sandbox)
- * Autenticação via AppKey (Bearer Token)
- */
-async function enviarPedidoPagBank(payload) {
-  const requestId = crypto.randomUUID();
-
-  const headers = {
-    Authorization: `Bearer ${PAGBANK_TOKEN}`,
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    "User-Agent": "PagBank-Node-Client"
-  };
-
-  auditPagBankRequest({
-    requestId,
-    url: `${PAGBANK_API}/orders`,
-    headers,
-    payload
-  });
-
-  try {
-    const response = await axios.post(
-  `${PAGBANK_API}/orders`,
-  payload,
-  { headers, timeout: 10000 }
-);
-
-if (response.status >= 400) {
-  throw new Error(JSON.stringify(response.data));
-}
-
-    auditPagBankResponse({
-      requestId,
-      status: response.status,
-      data: response.data
-    });
-
-    return response.data;
-  } catch (error) {
-    auditPagBankError({ requestId, error });
-    throw error;
-  }
-}
-
-/* =========================
-   PIX
-========================= */
-
-export async function criarPedidoPix(cart) {
-  const total = cart.reduce(
+  const totalProdutos = cart.reduce(
     (acc, item) => acc + item.preco * item.quantidade,
     0
   );
+
+  const total = totalProdutos + frete;
 
   const payload = {
     reference_id: "pedido_pix_" + Date.now(),
@@ -79,6 +17,21 @@ export async function criarPedidoPix(cart) {
       name: "Arthur_Barbosa",
       email: "arthur.shekinarfoxy@gmail.com",
       tax_id: "52517479852"
+    },
+
+    shipping: {
+      amount: {
+        value: Math.round(frete * 100)
+      },
+      address: {
+        street: "Rua Exemplo",
+        number: "123",
+        locality: "Centro",
+        city: "São Paulo",
+        region_code: "SP",
+        country: "BRA",
+        postal_code: cep
+      }
     },
 
     items: cart.map(item => ({
@@ -99,6 +52,7 @@ export async function criarPedidoPix(cart) {
   const order = await enviarPedidoPagBank(payload);
 
   const qrCode = order.qr_codes?.[0];
+
   if (!qrCode?.text) {
     throw new Error("PIX Copia e Cola não retornado");
   }
@@ -110,18 +64,22 @@ export async function criarPedidoPix(cart) {
     qrCodeLink:
       qrCode.links?.find(l => l.rel === "QRCODE")?.href || null
   };
-}
-
+}    
 
 export async function createCreditCard(req, res) {
   try {
-    const { encryptedCard } = req.body;
+    const { encryptedCard, cart, frete = 0, cep = "01001000" } = req.body;
 
     if (!encryptedCard) {
       return res.status(400).json({ error: "Cartão criptografado não informado" });
     }
 
-   const result = await createOrderWithCreditCard({ encryptedCard });
+    const result = await createOrderWithCreditCard({
+      encryptedCard,
+      cart,
+      frete,
+      cep
+    });
 
     res.json(result);
 
@@ -130,5 +88,3 @@ export async function createCreditCard(req, res) {
     res.status(500).json(error.response?.data || { error: "Erro interno" });
   }
 }
-
-
