@@ -22,20 +22,17 @@ router.post("/pix/create", async (req, res) => {
     res.status(201).json(result);
 
   } catch (error) {
-    console.error("❌ ERRO PIX:", error.message);
-   res.status(500).json({ error: "Erro ao processar pagamento" });
-  }
-});
-
-router.get("/debug-rotas", (req, res) => {
-  res.json({
-    rotas: [
-      "POST /pix/create",
-      "POST /credit-card/create",
-      "POST /webhook/pagbank",
-      "POST /calcular-frete"
-    ]
+  console.error("❌ ERRO PIX COMPLETO:", {
+    message: error.message,
+    stack: error.stack,
+    response: error.response?.data
   });
+
+  res.status(500).json({ 
+    error: error.message,
+    detalhe: error.response?.data || null
+  });
+}
 });
 
 router.post("/credit-card/create", async (req, res) => {
@@ -72,43 +69,17 @@ router.post("/calcular-frete", async (req, res) => {
 
     const cepLimpo = cep.replace(/\D/g, "");
 
-    if (cepLimpo.length !== 8) {
-      return res.status(400).json({ error: "CEP inválido" });
-    }
+    // mock por enquanto
+    const valorFrete = 15;
 
-    // 📍 CEP de origem (seu estoque)
-    const cepOrigem = "11706220"; // Bauru/SP (ajuste se quiser)
-
-    const cepDestinoNum = Number(cepLimpo);
-    const cepOrigemNum = Number(cepOrigem);
-
-    // 🧠 "distância simulada"
-    const distancia = Math.abs(cepDestinoNum - cepOrigemNum);
-
-    // 📦 regras de frete
-    const base = 10; // valor mínimo
-    const fatorDistancia = 0.000002; // ajusta sensibilidade
-
-    let valorFrete = base + distancia * fatorDistancia;
-
-    // 💰 limites (evita valores absurdos)
-    if (valorFrete < 10) valorFrete = 10;
-    if (valorFrete > 80) valorFrete = 80;
-
-    // arredonda
-    valorFrete = Number(valorFrete.toFixed(2));
-
-    res.json({
-      valor: valorFrete,
-      cep: cepLimpo,
-      distancia_simulada: distancia
-    });
+    res.json({ valor: valorFrete, cep: cepLimpo });
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Erro ao calcular frete" });
   }
 });
+
+
 
 
 

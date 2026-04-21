@@ -49,7 +49,7 @@ export async function criarPedidoPix(cart, frete = 0, cep = "01001000") {
     ]
   };
 
-  const order = await enviarPedidoPagBank(payload);
+  const order = await criarPedidoPix(payload);
 
   const qrCode = order.qr_codes?.[0];
 

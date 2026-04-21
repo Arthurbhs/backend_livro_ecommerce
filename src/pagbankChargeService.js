@@ -2,6 +2,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 import { auditPagBankRequest, auditPagBankResponse } from "./pagbankLogger.js";
 import { auditPagBankError } from "./pagbankLogger.js";
+import {criarPedidoPix} from "./pagbank.js"
 
 dotenv.config();
 export async function createOrderWithCreditCard({
@@ -88,6 +89,6 @@ export async function createOrderWithCreditCard({
     ]
   };
 
-  return await enviarPedidoPagBank(payload);
+  return await criarPedidoPix(payload);
 }
 
