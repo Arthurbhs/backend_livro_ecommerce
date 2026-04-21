@@ -2,10 +2,19 @@ export async function criarPedidoPix(cart, frete = 0, cep = "01001000") {
 
   cep = cep.replace(/\D/g, "");
 
-  const totalProdutos = cart.reduce(
-    (acc, item) => acc + item.preco * item.quantidade,
-    0
-  );
+if (!Array.isArray(cart) || cart.length === 0) {
+  console.error("❌ CART INVÁLIDO:", cart);
+  throw new Error("Carrinho vazio ou inválido");
+}
+
+const totalProdutos = cart.reduce(
+  (acc, item) => {
+    const preco = Number(item.preco) || 0;
+    const qtd = Number(item.quantidade) || 0;
+    return acc + preco * qtd;
+  },
+  0
+);
 
   const total = totalProdutos + frete;
 
