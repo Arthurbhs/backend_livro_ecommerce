@@ -5,8 +5,11 @@ import { createOrderWithCreditCard } from "./pagbankChargeService.js";
 
 const router = express.Router();
 
-// PIX
 router.post("/pix/create", async (req, res) => {
+  return res.json({ teste: "FUNCIONANDO" });
+});
+// PIX
+router.post("/pix/creat", async (req, res) => {
   try {
     console.log("📦 BODY RECEBIDO:", req.body);
 
