@@ -8,35 +8,39 @@ const router = express.Router();
 // PIX
 router.post("/pix/create", async (req, res) => {
   try {
-    console.log("📦 BODY RECEBIDO:", req.body); // 👈 AQUI
+    console.log("📦 BODY RECEBIDO:", req.body);
 
     const { cart, frete, cep } = req.body;
-  try {
-    const { cart, frete, cep } = req.body;
 
-    if (!cart || !Array.isArray(cart) || cart.length === 0) {
-      return res.status(400).json({ error: "Carrinho inválido" });
+    // 🔥 validação forte
+    if (!Array.isArray(cart) || cart.length === 0) {
+      return res.status(400).json({ 
+        error: "Carrinho inválido",
+        recebido: cart
+      });
     }
 
     const freteSeguro = Number(frete) || 0;
     const cepLimpo = cep ? cep.replace(/\D/g, "") : "01001000";
 
+    console.log("📦 CART FINAL:", cart);
+
     const result = await criarPedidoPix(cart, freteSeguro, cepLimpo);
 
-    res.status(201).json(result);
+    return res.status(201).json(result);
 
   } catch (error) {
-  console.error("❌ ERRO PIX COMPLETO:", {
-    message: error.message,
-    stack: error.stack,
-    response: error.response?.data
-  });
+    console.error("❌ ERRO PIX COMPLETO:", {
+      message: error.message,
+      stack: error.stack,
+      response: error.response?.data
+    });
 
-  res.status(500).json({ 
-    error: error.message,
-    detalhe: error.response?.data || null
-  });
-}
+    return res.status(500).json({ 
+      error: error.message,
+      detalhe: error.response?.data || null
+    });
+  }
 });
 
 router.post("/credit-card/create", async (req, res) => {
