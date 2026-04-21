@@ -8,6 +8,10 @@ const router = express.Router();
 // PIX
 router.post("/pix/create", async (req, res) => {
   try {
+    console.log("📦 BODY RECEBIDO:", req.body); // 👈 AQUI
+
+    const { cart, frete, cep } = req.body;
+  try {
     const { cart, frete, cep } = req.body;
 
     if (!cart || !Array.isArray(cart) || cart.length === 0) {
