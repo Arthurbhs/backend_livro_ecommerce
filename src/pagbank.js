@@ -1,20 +1,16 @@
 export async function criarPedidoPix(cart, frete = 0, cep = "01001000") {
-
   cep = cep.replace(/\D/g, "");
 
-if (!Array.isArray(cart) || cart.length === 0) {
-  console.error("❌ CART INVÁLIDO:", cart);
-  throw new Error("Carrinho vazio ou inválido");
-}
+  if (!Array.isArray(cart) || cart.length === 0) {
+    console.error("❌ CART INVÁLIDO:", cart);
+    throw new Error("Carrinho vazio ou inválido");
+  }
 
-const totalProdutos = cart.reduce(
-  (acc, item) => {
+  const totalProdutos = cart.reduce((acc, item) => {
     const preco = Number(item.preco) || 0;
     const qtd = Number(item.quantidade) || 0;
     return acc + preco * qtd;
-  },
-  0
-);
+  }, 0);
 
   const total = totalProdutos + frete;
 
@@ -58,22 +54,32 @@ const totalProdutos = cart.reduce(
     ]
   };
 
-  const order = await criarPedidoPix(payload);
+  // 🚀 AQUI ESTÁ A CORREÇÃO
+  const order = await fetch("https://api.pagseguro.com/orders", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.PAGBANK_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
 
-  const qrCode = order.qr_codes?.[0];
+  const data = await order.json();
+
+  const qrCode = data.qr_codes?.[0];
 
   if (!qrCode?.text) {
     throw new Error("PIX Copia e Cola não retornado");
   }
 
   return {
-    orderId: order.id,
-    status: order.status,
+    orderId: data.id,
+    status: data.status,
     pixCopiaCola: qrCode.text,
     qrCodeLink:
       qrCode.links?.find(l => l.rel === "QRCODE")?.href || null
   };
-}    
+}   
 
 export async function createCreditCard(req, res) {
   try {
