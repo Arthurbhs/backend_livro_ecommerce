@@ -5,10 +5,6 @@ import { createOrderWithCreditCard } from "./pagbankChargeService.js";
 
 const router = express.Router();
 
-app.use((req, res, next) => {
-  console.log("🔥 PASSOU NO SERVER:", req.method, req.url);
-  next();
-});
 
 // PIX
 router.post("/pix/create", async (req, res) => {
