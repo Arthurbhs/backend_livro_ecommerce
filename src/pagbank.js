@@ -55,6 +55,7 @@ export async function criarPedidoPix(cart, frete = 0, cep = "01001000") {
   };
 
   // 🚀 AQUI ESTÁ A CORREÇÃO
+  console.log("📤 PAYLOAD ENVIADO:", JSON.stringify(payload, null, 2));
   const order = await fetch("https://api.pagseguro.com/orders", {
     method: "POST",
     headers: {
@@ -64,7 +65,9 @@ export async function criarPedidoPix(cart, frete = 0, cep = "01001000") {
     body: JSON.stringify(payload)
   });
 
-  const data = await order.json();
+ const data = await order.json();
+
+console.log("📥 RESPOSTA PAGBANK:", JSON.stringify(data, null, 2));
 
   const qrCode = data.qr_codes?.[0];
 
