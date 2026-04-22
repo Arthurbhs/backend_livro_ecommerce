@@ -12,7 +12,7 @@ router.post("/pix/create", async (req, res) => {
     console.log("📦 BODY RECEBIDO:", req.body);
 
     const { cart, frete, cep } = req.body;
-
+router.post("/pix/create", async (req, res) => {
     // 🔥 validação forte
     if (!Array.isArray(cart) || cart.length === 0) {
       return res.status(400).json({ 
